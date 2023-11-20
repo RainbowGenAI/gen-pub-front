@@ -3,6 +3,5 @@
 ## installation
 ```
 npm install
-run start
- 
+npm start
 ```
