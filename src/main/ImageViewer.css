@@ -1,0 +1,68 @@
+/* ImageViewer.css */
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+
+  .header {
+    font-size: 45px;
+    flex: 1.5;
+    background-color: #c7f39e;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .content {
+    flex: 8.5;
+    display: flex;
+    flex-direction: row;
+
+    .left-section {
+      flex: 5;
+      background-color: #f1f3f5;
+      overflow: auto;
+      width: 100%;
+      
+      .button-container {
+        /* width: 100%; */
+        display: flex;
+        justify-content: space-between;
+        margin: 10px;
+
+        .input-file {
+          font-size: '16px';
+          padding: '10px';
+          border-radius: '5px';
+          background-color: rgb(0, 255, 213);
+          color: '#333';
+          border: 'none';
+          box-shadow: '0 2px 4px rgba(0, 0, 0, 0.1)';
+          cursor: 'pointer';
+        }
+          
+        /* .confirm-button {
+          text-align: right;
+        } */
+      }
+    }
+    
+    .right-section {
+      flex: 5;
+      background-color: #e9ecef;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+}
+
+
+
+
+
+
+
