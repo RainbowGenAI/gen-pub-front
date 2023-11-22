@@ -3,8 +3,8 @@
 ## What to do
  - 이미지 업로드 - O 
  - OCR(tesseract) - O
- - Bootstrap - X
- - OpenSeadragon - X
+ - Bootstrap - O
+ - OpenSeadragon - O
  - Langchain + LLM - X
  - Backend (?) - X
  
