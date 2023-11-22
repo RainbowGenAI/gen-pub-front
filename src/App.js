@@ -2,8 +2,9 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Link, useLocation } from 'react-router-dom';
 
 import './App.css';
-import ImegeViewer from './main/ImageViewer';
+import Main from './main/Main';
 import Home from './main/Home';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Navigation = () => {
   const location = useLocation();
@@ -27,7 +28,7 @@ const App = () => (
       <Navigation />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/imageviewer" element={<ImegeViewer />} />
+        <Route path="/main" element={<Main />} />
       </Routes>
     </div>
   </Router>
