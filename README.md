@@ -21,9 +21,9 @@
  |발표자료|X|스토리라인(?)|
  
 ## How to run
- - git clone https://github.com/RainbowGenAI/gen-pub-front.git
- - npm install
- - run start
+ 1. git clone https://github.com/RainbowGenAI/gen-pub-front.git
+ 2. npm install
+ 3. run start
 
 ## Reference
 - Bootstrap 
