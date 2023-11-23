@@ -29,7 +29,8 @@
 - Bootstrap 
   - https://react-bootstrap.netlify.app/docs/getting-started/introduction
   - https://getbootstrap.kr/docs/5.0/forms/form-control/
-- OpenSeadragon : 
+- OpenSeadragon
+  - https://github.com/annotorious/annotorious-openseadragon
 - LangChain 
   - https://python.langchain.com/docs/get_started/introduction  
 - CSS Flex 
@@ -39,3 +40,5 @@
  - github copilot
  - markdown-viewer
 
+## Benchmark
+  - https://teleporthq.io/
