@@ -22,8 +22,10 @@
  
 ## How to run
  1. git clone https://github.com/RainbowGenAI/gen-pub-front.git
- 2. npm install
- 3. run start
+ 2. root 에 .env 파일 생성. env 파일에 api key 추가 
+   - REACT_APP_OPENAI_API_KEY = 'your api key' 
+ 3. npm install
+ 4. run start
 
 ## Reference
 - Bootstrap 
@@ -31,8 +33,11 @@
   - https://getbootstrap.kr/docs/5.0/forms/form-control/
 - OpenSeadragon
   - https://github.com/annotorious/annotorious-openseadragon
+- OpenAI
+  - vision : https://platform.openai.com/docs/guides/vision
 - LangChain 
-  - https://python.langchain.com/docs/get_started/introduction  
+  - for python : https://python.langchain.com/docs/get_started/introduction
+  - for javascript : https://js.langchain.com/docs/get_started/introduction
 - CSS Flex 
   - https://flexboxfroggy.com/#ko
 

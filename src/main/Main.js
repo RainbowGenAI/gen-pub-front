@@ -1,59 +1,48 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import './Main.scss';
 import { createWorker } from 'tesseract.js';
 import { Button, InputGroup, Form} from 'react-bootstrap';
 import OpenSeadragon from 'openseadragon';
 import Annotorious from '@recogito/annotorious-openseadragon';
-
 import '@recogito/annotorious-openseadragon/dist/annotorious.min.css';
 
+import { OpenAI } from "langchain/llms/openai";
+import { ChatOpenAI } from "langchain/chat_models/openai";
+
+const OPENAI_CONFIG = {
+    openAIApiKey: process.env.REACT_APP_OPENAI_API_KEY,
+    temperature: 0.9,
+}
+
+const llm = new OpenAI(OPENAI_CONFIG);
+const chatModel = new ChatOpenAI(OPENAI_CONFIG);
 
 function Main() {
     const [selectedImage, setSelectedImage] = useState(null);
+    const textContainerRef = useRef(null);
 
-
+    // for OpenSeadragon    
     useEffect(() => {
         if(!selectedImage) return;
-
-        // Initialize OpenSeadragon
         const viewer = OpenSeadragon({
             id: 'openseadragonId-1',
-            // other OpenSeadragon options...
-            // prefixUrl: 'openseadragon/images/',
-            // tileSources: 'https://path-to-your-image.dzi',
             tileSources: {
                 type: 'image',
                 url: selectedImage,
             },
-            // sequenceMode: true,
-            // showReferenceStrip: true,
-            // referenceStripScroll: 'horizontal',
-            // referenceStripElement: 'referenceStrip',
-            // referenceStripHeight: 100,
-            // referenceStripWidth: 100,
-            // referenceStripPosition: 'BOTTOM_LEFT',
-            // referenceStripScroll: 'horizontal',
-            // showNavigator: true,
+            showNavigator: true,
             navigatorPosition: 'BOTTOM_RIGHT',
             navigatorHeight: 100,
             navigatorWidth: 100,
             zoomInButton: 'zoom-in',
             zoomOutButton: 'zoom-out',
+            // sequenceMode: true,
+            // showReferenceStrip: true,
             // homeButton: 'home',
         });
 
-        // Initialize Annotorious
         const anno = Annotorious(viewer);
-
-        // const script = document.createElement('script');
-        // script.src = 'openseadragon/openseadragon.min.js';
-        // script.async = true;
-        // document.body.appendChild(script);
-
-        // return () => {
-        //     document.body.removeChild(script);
-        // }
     }, [selectedImage]);
 
 
@@ -73,7 +62,7 @@ function Main() {
     const handleAnalyzeOcr = async () => {
         console.log("Confirm button clicked");
         //confirm("Confirm button clicked");
-        if(!selectedImage) {
+        if (!selectedImage) {
             alert("Select image first");
             return;
         }
@@ -83,13 +72,27 @@ function Main() {
         // await worker.loadLanguage('kor+eng');
         // await worker.initialize('kor+eng');
         const { data: { text } } = await worker.recognize(selectedImage);
-        console.log(text);
-        
-        const textContainer = document.querySelector('.text-container');
-        textContainer.innerHTML = text;
-
+        textContainerRef.current.textContent = text;
         await worker.terminate();
     };
+
+    const handleAnalyzeImage = async () => {
+        console.log("handleAnalyzeImage button clicked");
+        const text = "What would be a good company name for a company that makes colorful socks?";
+        
+        const llmResult = await llm.predict(text);
+        console.log("llmResult", llmResult);
+        
+        const chatResult = await chatModel.predict(text);
+        console.log("chatResult", chatResult);
+
+        textContainerRef.current.textContent = "LLM Result : " + llmResult;
+    };
+
+    const handleGerateImage = () => {
+        console.log("handleGerateImage button clicked");
+    };
+
 
     return (
         <div className="container-fluid container-custom">
@@ -99,15 +102,25 @@ function Main() {
                     <div className="m-2 button-container">
                         <InputGroup className="mb-3">
                             <input className="form-control" type="file" id="formFile" accept="image/*" onChange={handleImageUpload}></input>
-                            <Button variant="primary" type="button" className="confirm-button" onClick={handleAnalyzeOcr}>Analyze OCR</Button>
                         </InputGroup>
                     </div>
                 </div>
                 <div className="step-2 col-3 bg-success">
                     <span className="">Step 2</span>
+                    <div className="m-2 button-container">
+                        <InputGroup className="mb-3">
+                            <Button variant="warning" type="button" className="confirm-button" onClick={handleAnalyzeImage}>Analyze Image</Button>
+                            <Button variant="primary" type="button" className="confirm-button" onClick={handleGerateImage}>Generate Design</Button>
+                        </InputGroup>
+                    </div>
                 </div>
                 <div className="step-3 col-3 bg-warning">
                     <span className="">Step 3</span>
+                    <div className="m-2 button-container">
+                        <InputGroup className="mb-3">
+                            <Button variant="primary" type="button" className="confirm-button" onClick={handleAnalyzeOcr}>Analyze OCR</Button>
+                        </InputGroup>
+                    </div>
                 </div>
                 <div className="step-4 col-3 bg-info">
                     <span className="">Step 4</span>
@@ -121,7 +134,7 @@ function Main() {
                     )} */}
                 </div>
                 <div className="right-section">
-                    <div className="text-container">
+                    <div className="text-container" ref={textContainerRef}>
                     </div>
                 </div>
             </div>
