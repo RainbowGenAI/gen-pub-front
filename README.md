@@ -10,7 +10,7 @@
 
 ## What to do
  |Task|Done|comment|
- |---|---|---|
+ |---|:---:|---|
  |Frontend 구성|O|-| 
  |이미지 업로드|O|-|
  |OCR(tesseract)|O|한글 인식 안되는 현상 수정 필요|
