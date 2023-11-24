@@ -23,7 +23,7 @@
 ## How to run
  1. git clone https://github.com/RainbowGenAI/gen-pub-front.git
  2. root 에 .env 파일 생성. env 파일에 api key 추가 
-   - REACT_APP_OPENAI_API_KEY = 'your api key' 
+    - REACT_APP_OPENAI_API_KEY = 'your api key'      
  3. npm install
  4. run start
 
