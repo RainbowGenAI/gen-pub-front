@@ -4,7 +4,7 @@
  |---|---|---|
  |1|Upload file|Wireframe 파일 업로드|
  |2|Create design|디자인 이미지 생성|
- |3|Labeling|이미지 위에 labeling 한다.(tag, descrioption)|
+ |3|Labeling|이미지 위에 labeling 한다.(tag, description)|
  |4|Re-Design|Labeling 정보를 활용한 디자인 변경|
  |5|Publishing|생성된 디자인으로 html code 생성|
 
