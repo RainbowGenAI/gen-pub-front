@@ -36,27 +36,23 @@ function Main() {
     };
 
     const handleAnalyzeOcr = async () => {
-        // console.log("Confirm button clicked");
-        // if (!selectedImage) {
-        //     alert("Select image first");
-        //     return;
-        // }
+        console.log("Confirm button clicked");
+        if (!selectedImage) {
+            alert("Select image first");
+            return;
+        }
 
-        // const worker = await createWorker();
-        // await worker.load();
-        // await worker.loadLanguage('kor');
-        // await worker.reinitialize('kor');
-        // const response = await worker.recognize(selectedImage);
+        const worker = await createWorker();
+        await worker.load();
+        await worker.loadLanguage('kor');
+        await worker.reinitialize('kor');
+        const response = await worker.recognize(selectedImage);
 
-        // console.log(response.data);
-
+        console.log(response.data);
         // textContainerRef.current.textContent = response.data.text;
-        // await worker.terminate();
-    };
 
-    // const handleAnalyzeImage = async () => {
-    //     console.log("handleAnalyzeImage button clicked");
-    // };
+        await worker.terminate();
+    };
 
     const handleGerateImage = () => {
         console.log("handleGerateImage button clicked");
@@ -95,16 +91,16 @@ function Main() {
 
         setSelectedImage(generatedImage);
         setGeneratedImage(null);
-
-
-
     }
 
+    const handleCreateFinalImage = () => {
+        console.log("Create final image button clicked");
+    };
     return (
         <div className="container-fluid container-custom">
             <div className="header fs-3">
                 <div className="step-1 col-3">
-                    <span className="m-2">Step 1</span>
+                    <span className="m-2">1. Upload wireframe</span>
                     <div className="m-2 button-container">
                         <InputGroup className="mb-3">
                             <input className="form-control" type="file" id="formFile" accept="image/*" onChange={handleImageUpload}></input>
@@ -112,15 +108,14 @@ function Main() {
                     </div>
                 </div>
                 <div className="step-2 col-3">
-                    <span className="">Step 2</span>
+                    <span className="">2. Generate Image</span>
                     <div className="m-2 button-container">
                         <InputGroup className="mb-3">
-                            {/* <Button variant="warning" type="button" className="confirm-button" onClick={handleAnalyzeImage}>Analyze Image</Button> */}
                             <textarea className="form-control" id="userPrompt" ref={userPromptRef} 
                                 placeholder='원하는 스타일을 입력해 주세요' rows="1" 
                                 onInput={handleUserPropmtInput} 
                                 onChange={e => setUserInput(e.target.value)}
-                                style={{maxHeight: '4em'}}>
+                                style={{maxHeight: '4em'}} >
                             </textarea>
                         </InputGroup>
                         <div style={{textAlign: "right"}}>
@@ -130,15 +125,20 @@ function Main() {
                     </div>
                 </div>
                 <div className="step-3 col-3">
-                    <span className="">Step 3</span>
-                    <div className="m-2 button-container" style={{justifyContent: "flex-end"}}>
-                        <InputGroup className="mb-3">
+                    <span className="">3. Annotate Image</span>
+                    <div className="m-2 button-container" style={{height: "auto"}}>
+                        <InputGroup className="mb-3"  style={{justifyContent: "flex-end"}}>
                             <Button variant="primary" type="button" className="analyze-ocr-button" onClick={handleAnalyzeOcr}>Analyze OCR</Button>
                         </InputGroup>
                     </div>
                 </div>
                 <div className="step-4 col-3">
-                    <span className="">Step 4</span>
+                    <span className="">4. Final Image</span>
+                    <div className="m-2 button-container">
+                        <InputGroup className="mb-3"  style={{justifyContent: "flex-end"}}>
+                            <Button variant="primary" type="button" className="create-final-image-button" onClick={handleCreateFinalImage}>Create Final Image</Button>
+                        </InputGroup>
+                    </div>
                 </div>
             </div>
             <div className="content">
