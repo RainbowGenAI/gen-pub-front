@@ -35,6 +35,7 @@
   - https://github.com/annotorious/annotorious-openseadragon
 - OpenAI
   - vision : https://platform.openai.com/docs/guides/vision
+  - generate image : https://platform.openai.com/docs/guides/images
 - LangChain 
   - for python : https://python.langchain.com/docs/get_started/introduction
   - for javascript : https://js.langchain.com/docs/get_started/introduction
