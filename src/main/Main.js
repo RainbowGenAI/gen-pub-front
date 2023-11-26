@@ -43,6 +43,19 @@ function Main() {
         });
 
         const anno = Annotorious(viewer);
+
+        // Load annotations in W3C WebAnnotation format
+        anno.loadAnnotations('annotations.w3c.json');
+
+        // Attach handlers to listen to events
+        anno.on('createAnnotation', function(a) {
+            // Do something
+            console.log(a); // => 'my-selector'
+            const value = target.body.value; // => 'my-value'
+            // value parsing 하기
+            value
+        });
+
     }, [selectedImage]);
 
 
@@ -61,18 +74,20 @@ function Main() {
 
     const handleAnalyzeOcr = async () => {
         console.log("Confirm button clicked");
-        //confirm("Confirm button clicked");
         if (!selectedImage) {
             alert("Select image first");
             return;
         }
 
         const worker = await createWorker();
-        // await worker.load();
-        // await worker.loadLanguage('kor+eng');
-        // await worker.initialize('kor+eng');
-        const { data: { text } } = await worker.recognize(selectedImage);
-        textContainerRef.current.textContent = text;
+        await worker.load();
+        await worker.loadLanguage('kor');
+        await worker.reinitialize('kor');
+        const response = await worker.recognize(selectedImage);
+
+        console.log(response.data);
+
+        textContainerRef.current.textContent = response.data.text;
         await worker.terminate();
     };
 
