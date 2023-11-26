@@ -4,7 +4,7 @@
  |---|---|---|
  |1|Upload file|Wireframe 파일 업로드|
  |2|Create design|디자인 이미지 생성|
- |3|Labeling|이미지 위에 labeling 한다.(tag, descrioption)|
+ |3|Labeling|이미지 위에 labeling 한다.(tag, description)|
  |4|Re-Design|Labeling 정보를 활용한 디자인 변경|
  |5|Publishing|생성된 디자인으로 html code 생성|
 
@@ -23,7 +23,7 @@
 ## How to run
  1. git clone https://github.com/RainbowGenAI/gen-pub-front.git
  2. root 에 .env 파일 생성. env 파일에 api key 추가 
-   - REACT_APP_OPENAI_API_KEY = 'your api key' 
+    - REACT_APP_OPENAI_API_KEY = 'your api key'      
  3. npm install
  4. run start
 
