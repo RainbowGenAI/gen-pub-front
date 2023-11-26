@@ -50,10 +50,21 @@ function Main() {
         // Attach handlers to listen to events
         anno.on('createAnnotation', function(a) {
             // Do something
-            console.log(a); // => 'my-selector'
-            const value = target.body.value; // => 'my-value'
-            // value parsing 하기
-            value
+            console.log(a);
+            // console.log(a.target.selector.value);
+            const comment = a.body[0].value; // => 'my-value'
+            const xywh = a.target.selector.value; // => 'my-value'
+            const values = xywh.replace("xywh=pixel:", "").split(",");
+            console.log(comment, xywh);
+
+            // Parse the values to float
+            const x = parseFloat(values[0]);
+            const y = parseFloat(values[1]);
+            const h = parseFloat(values[2]);
+            const w = parseFloat(values[3]);
+
+            console.log(x, y, h, w);
+
         });
 
     }, [selectedImage]);
