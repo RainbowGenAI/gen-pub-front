@@ -2,9 +2,9 @@ import OpenAI from "openai";
 import { config } from 'dotenv';
 config();
 
-const openai = new OpenAI(
-    process.env.REACT_APP_OPENAI_API_KEY    // API Key
-);
+const openai = new OpenAI({
+  apiKey: process.env.REACT_APP_OPENAI_API_KEY
+});
 
 async function main() {
   const response = await openai.chat.completions.create({
