@@ -8,6 +8,17 @@ import '@recogito/annotorious-openseadragon/dist/annotorious.min.css';
 let viewer = null;
 
 function ImageViewer(props) {
+  const [label, setLabel] = useState(null);
+
+  useEffect(() => {
+    if(!label) return;
+    const text = extractTextFromBbox(props.ocrData, label);
+    console.log(text);
+    label.ocrText = text;
+
+    props.handleCreatedAnnotation(label);
+
+  }, [label]);
 
   useEffect(() => {
       if(!props.selectedImage) return;
@@ -48,7 +59,6 @@ function ImageViewer(props) {
           const h = parseFloat(values[3]);
 
           // console.log(x, y, h, w);
-
           
           const label = {
             comment: comment,
@@ -57,12 +67,41 @@ function ImageViewer(props) {
             h: h,
             w: w,
           };
-          
-          props.handleCreatedAnnotation(label);
+
+          setLabel(label);
+
+          // props.handleCreatedAnnotation(label);
           
       });
 
     }, [props.selectedImage]);
+
+    function extractTextFromBbox(ocrData, label) {
+      const { x: left, y: top, w: width, h: height } = label;
+      const right = left + width;
+      const bottom = top + height;
+    
+      // OCR 데이터에서 bounding box에 해당하는 텍스트를 추출합니다
+      let texts = "";
+      ocrData.filter(line => {
+          const words = line.words.filter(word => {
+              const { x0: wordLeft, y0: wordTop, x1: wordRight, y1: wordBottom } = word.bbox;
+
+              // 아이템의 좌표가 bounding box 내부에 있는지 확인합니다
+              return wordLeft >= left && wordTop >= top && wordRight <= right && wordBottom <= bottom;
+          }).map(word => word.text);
+
+          if(words.length > 0) {
+            if(texts.length > 0) texts += '\n';
+            texts += words.join(' ');
+          }
+      });
+
+      // 추출된 텍스트를 반환합니다
+      return texts;
+      
+    }
+
 
     //Stop error resizeObserver
     const debounce = (callback, delay) => {

@@ -18,13 +18,8 @@ function Main() {
     const [userInput, setUserInput] = useState(null);
     const [labelInfo, setLabelInfo] = useState([]);
     const [isRightSection, setIsRightSection] = useState('image'); //image, text
+    const [ocrData, setOcrData] = useState([]);
     const textContainerRef = useRef(null);
-
-    // useEffect(() => {
-    // }, [selectedImage]);
-
-    // useEffect(() => {
-    // }, [generatedImage]);
 
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
@@ -54,7 +49,8 @@ function Main() {
         await worker.reinitialize('kor');
         const response = await worker.recognize(selectedImage);
 
-        console.log(response.data);
+        console.log(response.data.lines);
+        setOcrData(response.data.lines);
         textContainerRef.current.textContent = response.data.text;
 
         await worker.terminate();
@@ -81,6 +77,7 @@ function Main() {
 
     const handleCreatedAnnotation = (label) => {
         console.log("handleCreatedAnnotation button clicked");
+        console.log(label);
         setLabelInfo(labelInfo => [...labelInfo, label]);
     };
 
@@ -101,8 +98,7 @@ function Main() {
     }
 
     const handleRegenerateImage = () => {
-        console.log("Regenerate image button clicked");
-        console.log(labelInfo)
+        console.log("Regenerate image button clicked", labelInfo);
 
         setIsRightSection('image');
 
@@ -119,20 +115,6 @@ function Main() {
 
             // 캔버스에 이미지를 추가합니다
             canvas.add(img);
-
-            // 마스크로 사용할 객체를 생성합니다
-            // const x = labelInfo[0].x ?? 0;
-            // const y = labelInfo[0].y ?? 0;
-            // const h = labelInfo[0].h ?? 0;
-            // const w = labelInfo[0].w ?? 0;
-            // const mask = new fabric.Rect({
-            //     left: x,
-            //     top: y,
-            //     width: w,
-            //     height: h,
-            //     fill: '#fff', // 마스크 색상
-            //     globalCompositeOperation: 'destination-out',
-            // });
 
             // labelInfo 배열의 각 요소에 대해 new fabric.Rect를 생성하고 canvas.add를 호출합니다
             labelInfo.forEach(label => {
@@ -212,8 +194,8 @@ function Main() {
                 <div className="step-3 col-3">
                     <span className="">3. Modify Image</span>
                     <div className="m-2 button-container">
-                        <Button variant="success" type="button" className="regenerate-image-button m-2" onClick={handleRegenerateImage}>Re-Generate Design</Button>
-                        <Button variant="info" type="button" className="analyze-ocr-button m-2" onClick={handleAnalyzeOcr}>Analyze OCR</Button>
+                        <Button variant="info" type="button" className="analyze-ocr-button" onClick={handleAnalyzeOcr}>Analyze OCR</Button>
+                        <Button variant="success" type="button" className="regenerate-image-button m-2" onClick={handleRegenerateImage}>Re-Generate</Button>
                         <Button variant="primary" type="button" className="confirm-button" onClick={handleConfirmImage}>Confirm</Button>
                     </div>
                 </div>
@@ -232,6 +214,7 @@ function Main() {
                         selectedImage={selectedImage}
                         labelInfo={labelInfo}
                         handleCreatedAnnotation={handleCreatedAnnotation}
+                        ocrData={ocrData}
                     />
                 </div>
                 <div className="right-section">
