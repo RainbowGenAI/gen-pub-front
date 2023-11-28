@@ -1,6 +1,7 @@
 import { OpenAI } from "openai";
 // import { OpenAI } from "langchain/llms/openai";
 // import { ChatOpenAI } from "langchain/chat_models/openai";
+import { Prompt } from './Prompt.js'
 
 const api_config = {
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
@@ -8,10 +9,10 @@ const api_config = {
   temperature: 0.9,
 }
 
-const langchain_api_config = {
-  openAIApiKey: process.env.REACT_APP_OPENAI_API_KEY,
-  temperature: 0.9,
-}
+// const langchain_api_config = {
+//   openAIApiKey: process.env.REACT_APP_OPENAI_API_KEY,
+//   temperature: 0.9,
+// }
 
 const headers = {
   'Content-Type': 'application/json',
@@ -40,8 +41,8 @@ const test = async () => {
   return llmResult;
 }
 
-const createImagePrpomt = async (userInput, selecedImage) => {
-  console.log("createImage!!");
+const createPromptByImage = async (userInput, selecedImage) => {
+  console.log("createPromptByImage");
 
   const payload = {
     model: 'gpt-4-vision-preview',
@@ -51,17 +52,14 @@ const createImagePrpomt = async (userInput, selecedImage) => {
         content: [
           {
             type: 'text',
-            text: 'Please analyze the image and make a prompt\n' + 
-                  'I will create an same image based on the prompt.\n' +
-                  'The image style is similar to the image below.\n' +
-                  'The image style can be chaged by userPrompt.\n' + 
-                  'userInput : ' + userInput 
+            text: Prompt.ANALYZE_IMAGE + userInput 
           },
           {
             type: 'image_url',
             image_url: {
               // url: `data:image/jpeg;base64,${selecedImage}`
-              url: selecedImage
+              url: selecedImage,
+              detail: 'low', //high
             }
           }
         ]
@@ -84,11 +82,13 @@ const createImagePrpomt = async (userInput, selecedImage) => {
 }
 
 const createImage = async (prompt) => {
+  console.log("createImage");
   return await openai.images.generate({ 
     model: "dall-e-3", //dall-e-2, dall-e-3
     prompt: prompt, 
     n: 1,
     size: "1024x1024", // 512x512 for dalle2, 1024x1024 for dalle3
+    quality: "standard", // standard, hq
     response_format: "b64_json",
   }).then((result) => {
     // console.log(result);
@@ -99,9 +99,49 @@ const createImage = async (prompt) => {
   });
 }
 
+const createCodeByImage = async (selecedImage) => {
+  console.log("createCodeByImage");
+
+  const payload = {
+    model: 'gpt-4-vision-preview',
+    messages: [
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'text',
+            text: Prompt.GENERATE_HTML_CODE,
+          },
+          {
+            type: 'image_url',
+            image_url: {
+              url: selecedImage,
+              detail: 'low',
+            }
+          }
+        ]
+      }
+    ],
+    max_tokens: 2000
+  };
+
+  return await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify(payload)
+  })
+  .then(response => response.json())
+  .then(data => {
+    // console.log(data);
+    console.log(data.choices[0].message);
+    return (data.choices[0].message.content);
+  });
+}
+
 export default {
   initOpenAI: initOpenAI,
   test: test,
-  createImagePrpomt: createImagePrpomt,
+  createPromptByImage: createPromptByImage,
   createImage: createImage,
+  createCodeByImage: createCodeByImage,
 };

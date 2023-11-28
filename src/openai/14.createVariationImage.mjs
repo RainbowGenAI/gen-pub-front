@@ -11,8 +11,9 @@ async function main() {
 
     // 주어진 이미지를 기반으로 새로운 이미지를 생성
     const response = await openai.images.createVariation({ 
-      size: "1024x1024",
+      size: "512x512",
       image: fs.createReadStream("D:\\testfiles\\wireframe_sample2.png"),
+      quality: "standard"
       // response_format: "b64_json",
     });
 

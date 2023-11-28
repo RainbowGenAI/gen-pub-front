@@ -8,10 +8,11 @@ const openai = new OpenAI({
 
 async function main() {
     const response = await openai.images.edit({ 
-      size: "1024x1024",
+      size: "512x512",
       image: fs.createReadStream("D:\\testfiles\\wireframe_sample2.png"),
       mask: fs.createReadStream("D:\\testfiles\\wireframe_sample2.png"),
       prompt: "A cute baby sea otter",
+      quality: "standard",
       // response_format: "b64_json",
     });
 

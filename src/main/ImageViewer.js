@@ -34,13 +34,6 @@ function ImageViewer(props) {
       });
 
       const anno = Annotorious(viewer);
-      // anno.loadAnnotations('annotations.w3c.json')
-      // .then(function(annotations) {
-      //     console.log(annotations);
-      // })
-      // .catch(function(error) {
-      //     console.log(error);
-      // });
 
       anno.on('createAnnotation', function(a) {
           // console.log(a);
@@ -51,15 +44,46 @@ function ImageViewer(props) {
 
           const x = parseFloat(values[0]);
           const y = parseFloat(values[1]);
-          const h = parseFloat(values[2]);
-          const w = parseFloat(values[3]);
+          const w = parseFloat(values[2]);
+          const h = parseFloat(values[3]);
 
           // console.log(x, y, h, w);
 
-          props.handleCreatedAnnotation(comment, x, y, h, w);
+          
+          const label = {
+            comment: comment,
+            x: x,
+            y: y,
+            h: h,
+            w: w,
+          };
+          
+          props.handleCreatedAnnotation(label);
+          
       });
 
     }, [props.selectedImage]);
+
+    //Stop error resizeObserver
+    const debounce = (callback, delay) => {
+      let tid;
+      return function (...args) {
+        const ctx = this;
+        tid && clearTimeout(tid);
+        tid = setTimeout(() => {
+          callback.apply(ctx, args);
+        }, delay);
+      };
+    };
+    
+    const _ = window.ResizeObserver;
+    window.ResizeObserver = class ResizeObserver extends _ {
+      constructor(callback) {
+        callback = debounce(callback, 20);
+        super(callback);
+      }
+    };
+
 
   return (
     <>

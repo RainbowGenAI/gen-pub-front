@@ -4,6 +4,7 @@ import '../scss/Main.scss';
 import { createWorker } from 'tesseract.js';
 import { Button, InputGroup} from 'react-bootstrap';
 import ImageViewer from './ImageViewer';
+import { fabric } from 'fabric';
 
 import LLM from './LLM';
 
@@ -14,12 +15,15 @@ function Main() {
     const [selectedImage, setSelectedImage] = useState(null);
     const [generatedImage, setGeneratedImage] = useState(null);
     const [userInput, setUserInput] = useState(null);
+    const [labelInfo, setLabelInfo] = useState([]);
+    const [isRightSection, setIsRightSection] = useState('image'); //image, text
     const textContainerRef = useRef(null);
 
     useEffect(() => {
+      }, [selectedImage]);
+
+    useEffect(() => {
         if(!generatedImage) return;
-
-
     }, [generatedImage]);
 
     const handleImageUpload = (event) => {
@@ -37,6 +41,8 @@ function Main() {
 
     const handleAnalyzeOcr = async () => {
         console.log("Confirm button clicked");
+        setIsRightSection('text');
+
         if (!selectedImage) {
             alert("Select image first");
             return;
@@ -49,16 +55,17 @@ function Main() {
         const response = await worker.recognize(selectedImage);
 
         console.log(response.data);
-        // textContainerRef.current.textContent = response.data.text;
+        textContainerRef.current.textContent = response.data.text;
 
         await worker.terminate();
     };
 
     const handleGerateImage = () => {
         console.log("handleGerateImage button clicked");
+        setIsRightSection('image');
 
         // LLM.createImage("test");
-        LLM.createImagePrpomt(userInput, selectedImage)
+        LLM.createPromptByImage(userInput, selectedImage)
         .then((result) => {
             console.log(result);
             return result;
@@ -72,9 +79,9 @@ function Main() {
         });
     };
 
-    const handleCreatedAnnotation = (comment, x, y, h, w) => {
-        console.log("handleCreatedAnnotation");
-        console.log(comment, x, y, h, w);
+    const handleCreatedAnnotation = (label) => {
+        console.log("handleCreatedAnnotation button clicked");
+        setLabelInfo(labelInfo => [...labelInfo, label]);
     };
 
     const handleUserPropmtInput = (e) => {
@@ -93,9 +100,85 @@ function Main() {
         setGeneratedImage(null);
     }
 
-    const handleCreateFinalImage = () => {
-        console.log("Create final image button clicked");
+    const handleRegenerateImage = async () => {
+        console.log("Regenerate image button clicked");
+        console.log(labelInfo)
+
+        setIsRightSection('image');
+
+
+        if (!selectedImage) {
+            alert("Select image first");
+            return;
+        }
+
+        let x = 0;
+        let y = 0;
+        let h = 0;
+        let w = 0;
+        if (labelInfo.length != 0) {
+            x = labelInfo[0].x;
+            y = labelInfo[0].y;
+            h = labelInfo[0].h;
+            w = labelInfo[0].w;
+        }
+        console.log(x, y, h, w);
+
+        fabric.Image.fromURL(selectedImage, function(img) {
+                    // 요소의 너비와 높이를 가져옵니다
+            const container = document.getElementsByClassName('image-container')[0];
+            const width = container.offsetWidth;
+            const height = container.offsetHeight;
+            const canvas = new fabric.Canvas('canvas', {width: width, height: height});
+
+            // 마스크로 사용할 객체를 생성합니다
+            const mask = new fabric.Rect({
+                left: x,
+                top: y,
+                width: w,
+                height: h,
+                fill: '#fff', // 마스크 색상
+                globalCompositeOperation: 'destination-out',
+            });
+        
+            // img.scaleX = canvas.width / img.width;
+            // img.scaleY = canvas.height / img.height;
+
+            // 캔버스에 이미지를 추가합니다
+            canvas.add(img);
+            canvas.add(mask);
+
+            // 이미지의 크기를 조정합니다
+            // img.scaleToWidth(width);
+            // img.scaleX = width / img.width;
+            canvas.setHeight(img.getScaledHeight());
+
+            // 이미지를 캔버스의 가운데로 이동시킵니다
+            // img.center();
+        
+            // 캔버스를 렌더링하고 PNG 형식으로 내보냅니다
+            const pngDataUrl = canvas.toDataURL('image/png');
+            setGeneratedImage(pngDataUrl);
+
+            // setGeneratedImage(selectedImage);
+        
+        });
+
     };
+
+    const handleGenerateHtmlCode = () => {
+        console.log("Create final image button clicked");
+        setIsRightSection('text');
+        // LLM.createImage("test");
+        LLM.createCodeByImage(selectedImage)
+        .then((result) => {
+            console.log(result);
+            textContainerRef.current.textContent = result;
+        }).catch((err) => {
+            console.log(err);
+        })
+    };
+
     return (
         <div className="container-fluid container-custom">
             <div className="header fs-3">
@@ -119,24 +202,24 @@ function Main() {
                             </textarea>
                         </InputGroup>
                         <div style={{textAlign: "right"}}>
-                            <Button variant="success" type="button" className="generate-image-button" onClick={handleGerateImage}>Generate Design</Button>
+                            <Button variant="success" type="button" className="generate-image-button" style={{marginRight: '5px'}} onClick={handleGerateImage}>Generate Design</Button>
                             <Button variant="primary" type="button" className="confirm-button" onClick={handleConfirmImage}>Confirm</Button>
                         </div>
                     </div>
                 </div>
                 <div className="step-3 col-3">
-                    <span className="">3. Annotate Image</span>
-                    <div className="m-2 button-container" style={{height: "auto"}}>
-                        <InputGroup className="mb-3"  style={{justifyContent: "flex-end"}}>
-                            <Button variant="primary" type="button" className="analyze-ocr-button" onClick={handleAnalyzeOcr}>Analyze OCR</Button>
-                        </InputGroup>
+                    <span className="">3. Modify Image</span>
+                    <div className="m-2 button-container">
+                        <Button variant="success" type="button" className="regenerate-image-button m-2" onClick={handleRegenerateImage}>Re-Generate Design</Button>
+                        <Button variant="info" type="button" className="analyze-ocr-button m-2" onClick={handleAnalyzeOcr}>Analyze OCR</Button>
+                        <Button variant="primary" type="button" className="confirm-button" onClick={handleConfirmImage}>Confirm</Button>
                     </div>
                 </div>
                 <div className="step-4 col-3">
-                    <span className="">4. Final Image</span>
+                    <span className="">4. Generate Code</span>
                     <div className="m-2 button-container">
                         <InputGroup className="mb-3"  style={{justifyContent: "flex-end"}}>
-                            <Button variant="primary" type="button" className="create-final-image-button" onClick={handleCreateFinalImage}>Create Final Image</Button>
+                            <Button variant="primary" type="button" className="generate-html-code-button" onClick={handleGenerateHtmlCode}>Generate Code</Button>
                         </InputGroup>
                     </div>
                 </div>
@@ -145,17 +228,18 @@ function Main() {
                 <div className="left-section">
                     <ImageViewer 
                         selectedImage={selectedImage}
+                        labelInfo={labelInfo}
                         handleCreatedAnnotation={handleCreatedAnnotation}
                     />
                 </div>
                 <div className="right-section">
-                    <div className="image-container">
+                    <div className={`image-container ${isRightSection != 'image'? 'hide' : ''}`}>
                         {generatedImage && (
-                            <img src={generatedImage} alt="Uploaded" className="generated-image" style={{ maxWidth: '100%' }} />)
+                            <img src={generatedImage} alt="Uploaded" className="generated-image" />)
                         }
                     </div>
-                    {/* <div className="text-container" ref={textContainerRef}>
-                    </div> */}
+                    <div className={`text-container ${isRightSection != 'text'? 'hide' : ''}`} ref={textContainerRef}>
+                    </div>
                 </div>
             </div>
             <div className="footer">
