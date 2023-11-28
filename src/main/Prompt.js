@@ -13,4 +13,6 @@ export const Prompt = {
     '[example]\n' +
     '<!DOCTYPE html><html lang="en"> <div></div> <div></div> <div></div> <div></div> </html>\n',
 
+    MODIFY_IMAGE : 'Please modify the image\n' +
+    'a cute baby cat in the masked area\n',
 }

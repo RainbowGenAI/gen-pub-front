@@ -4,6 +4,7 @@ import '../scss/Main.scss';
 import { createWorker } from 'tesseract.js';
 import { Button, InputGroup} from 'react-bootstrap';
 import ImageViewer from './ImageViewer';
+import ResultViewer from './ResultViewer';
 import { fabric } from 'fabric';
 
 import LLM from './LLM';
@@ -19,12 +20,11 @@ function Main() {
     const [isRightSection, setIsRightSection] = useState('image'); //image, text
     const textContainerRef = useRef(null);
 
-    useEffect(() => {
-      }, [selectedImage]);
+    // useEffect(() => {
+    // }, [selectedImage]);
 
-    useEffect(() => {
-        if(!generatedImage) return;
-    }, [generatedImage]);
+    // useEffect(() => {
+    // }, [generatedImage]);
 
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
@@ -100,68 +100,70 @@ function Main() {
         setGeneratedImage(null);
     }
 
-    const handleRegenerateImage = async () => {
+    const handleRegenerateImage = () => {
         console.log("Regenerate image button clicked");
         console.log(labelInfo)
 
         setIsRightSection('image');
-
 
         if (!selectedImage) {
             alert("Select image first");
             return;
         }
 
-        let x = 0;
-        let y = 0;
-        let h = 0;
-        let w = 0;
-        if (labelInfo.length != 0) {
-            x = labelInfo[0].x;
-            y = labelInfo[0].y;
-            h = labelInfo[0].h;
-            w = labelInfo[0].w;
-        }
-        console.log(x, y, h, w);
-
         fabric.Image.fromURL(selectedImage, function(img) {
-                    // 요소의 너비와 높이를 가져옵니다
-            const container = document.getElementsByClassName('image-container')[0];
-            const width = container.offsetWidth;
-            const height = container.offsetHeight;
+            // 요소의 너비와 높이를 가져옵니다
+            const width = img.width;
+            const height = img.height;
             const canvas = new fabric.Canvas('canvas', {width: width, height: height});
-
-            // 마스크로 사용할 객체를 생성합니다
-            const mask = new fabric.Rect({
-                left: x,
-                top: y,
-                width: w,
-                height: h,
-                fill: '#fff', // 마스크 색상
-                globalCompositeOperation: 'destination-out',
-            });
-        
-            // img.scaleX = canvas.width / img.width;
-            // img.scaleY = canvas.height / img.height;
 
             // 캔버스에 이미지를 추가합니다
             canvas.add(img);
-            canvas.add(mask);
+
+            // 마스크로 사용할 객체를 생성합니다
+            // const x = labelInfo[0].x ?? 0;
+            // const y = labelInfo[0].y ?? 0;
+            // const h = labelInfo[0].h ?? 0;
+            // const w = labelInfo[0].w ?? 0;
+            // const mask = new fabric.Rect({
+            //     left: x,
+            //     top: y,
+            //     width: w,
+            //     height: h,
+            //     fill: '#fff', // 마스크 색상
+            //     globalCompositeOperation: 'destination-out',
+            // });
+
+            // labelInfo 배열의 각 요소에 대해 new fabric.Rect를 생성하고 canvas.add를 호출합니다
+            labelInfo.forEach(label => {
+                const rect = new fabric.Rect({
+                    left: label.x,
+                    top: label.y,
+                    width: label.w,
+                    height: label.h,
+                    fill: '#fff',
+                    globalCompositeOperation: 'destination-out',
+                });
+            
+                // 캔버스에 마스크를 추가합니다
+                canvas.add(rect);
+            });
+
 
             // 이미지의 크기를 조정합니다
             // img.scaleToWidth(width);
-            // img.scaleX = width / img.width;
-            canvas.setHeight(img.getScaledHeight());
-
-            // 이미지를 캔버스의 가운데로 이동시킵니다
-            // img.center();
-        
+            // canvas.setHeight(img.getScaledHeight());
+            
             // 캔버스를 렌더링하고 PNG 형식으로 내보냅니다
             const pngDataUrl = canvas.toDataURL('image/png');
             setGeneratedImage(pngDataUrl);
 
-            // setGeneratedImage(selectedImage);
-        
+            LLM.modifyImage(selectedImage, pngDataUrl, 'test')
+            .then((result) => {
+                console.log(result);
+                return result;
+            });
+
         });
 
     };
@@ -234,9 +236,12 @@ function Main() {
                 </div>
                 <div className="right-section">
                     <div className={`image-container ${isRightSection != 'image'? 'hide' : ''}`}>
-                        {generatedImage && (
+                        {/* {generatedImage && (
                             <img src={generatedImage} alt="Uploaded" className="generated-image" />)
-                        }
+                        } */}
+                        <ResultViewer 
+                            generatedImage={generatedImage}
+                        />
                     </div>
                     <div className={`text-container ${isRightSection != 'text'? 'hide' : ''}`} ref={textContainerRef}>
                     </div>

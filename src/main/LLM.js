@@ -81,23 +81,6 @@ const createPromptByImage = async (userInput, selecedImage) => {
   });
 }
 
-const createImage = async (prompt) => {
-  console.log("createImage");
-  return await openai.images.generate({ 
-    model: "dall-e-3", //dall-e-2, dall-e-3
-    prompt: prompt, 
-    n: 1,
-    size: "1024x1024", // 512x512 for dalle2, 1024x1024 for dalle3
-    quality: "standard", // standard, hq
-    response_format: "b64_json",
-  }).then((result) => {
-    // console.log(result);
-    const image = result.data[0];
-    // const image_url = image.url;
-    const base64_image = 'data:image/jpeg;base64,' + image.b64_json;
-    return base64_image;
-  });
-}
 
 const createCodeByImage = async (selecedImage) => {
   console.log("createCodeByImage");
@@ -138,10 +121,53 @@ const createCodeByImage = async (selecedImage) => {
   });
 }
 
+const createImage = async (prompt) => {
+  console.log("createImage");
+  return await openai.images.generate({ 
+    model: "dall-e-3", //dall-e-2, dall-e-3
+    prompt: prompt, 
+    n: 1,
+    size: "1024x1024", // 512x512 for dalle2, 1024x1024 for dalle3
+    quality: "standard", // standard, hq
+    response_format: "b64_json",
+  }).then((result) => {
+    // console.log(result);
+    const image = result.data[0];
+    // const image_url = image.url;
+    const base64_image = 'data:image/jpeg;base64,' + image.b64_json;
+    return base64_image;
+  });
+}
+
+const modifyImage = async (selectedImage, generatedImage, prompt) => {
+  console.log("modifyImage");
+
+  // console.log(selectedImage.substring(0, 50),  "=======", generatedImage.substring(0, 50), prompt);
+  // return;
+
+  return await openai.images.edit({ 
+    model: "dall-e-2", //dall-e-2, dall-e-3
+    image: selectedImage,
+    mask: generatedImage,
+    prompt: Prompt.MODIFY_IMAGE, 
+    // n: 1,
+    // size: "512x512", // 512x512 for dalle2, 1024x1024 for dalle3
+    // response_format: "b64_json",
+  }).then((result) => {
+    console.log(result);
+    const image = result.data[0];
+    // const image_url = image.url;
+    const base64_image = 'data:image/jpeg;base64,' + image.b64_json;
+    return base64_image;
+  });
+}
+
+
 export default {
   initOpenAI: initOpenAI,
   test: test,
   createPromptByImage: createPromptByImage,
   createImage: createImage,
   createCodeByImage: createCodeByImage,
+  modifyImage: modifyImage,
 };
