@@ -66,7 +66,7 @@ function ImageViewer(props) {
       const anno = Annotorious(viewer, config);
 
       anno.on('createAnnotation', function(a) {
-          // console.log(a);
+           console.log(a);
           const comment = a.body[0].value;
           const xywh = a.target.selector.value;
           const values = xywh.replace("xywh=pixel:", "").split(",");

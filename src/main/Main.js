@@ -60,8 +60,8 @@ function Main() {
 
         const worker = await createWorker();
         await worker.load();
-        await worker.loadLanguage('kor');
-        await worker.reinitialize('kor');
+        await worker.loadLanguage('eng');
+        await worker.reinitialize('eng');
         const response = await worker.recognize(selectedImage);
         setLoading(false);
 
@@ -160,7 +160,7 @@ function Main() {
 
             // return;
             setLoading(true);
-            LLM.modifyImage(selectedImage, pngDataUrl, labelInfo)
+            LLM.modifyImage(selectedImage, pngDataUrl, labelInfo, ocrData)
             .then((result) => {
                 setLoading(false);
                 // console.log(result);

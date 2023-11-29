@@ -140,10 +140,40 @@ const createImage = async (prompt) => {
   });
 }
 
-const modifyImage = async (selectedImage, maskedImage, labelInfo) => {
+const modifyImage = async (selectedImage, maskedImage, labelInfo, ocrData) => {
   console.log("modifyImage", labelInfo);
 
-  const userComment = labelInfo[0]?.comment;
+//  var ocrDataModified = [];
+//  for (var i = 0; i < ocrData.length; i++) {
+//      const outerBbox = ocrData[i];
+//      var subList = []
+//      for (var j = 0; j < outerBbox.length; j++) {
+//        var subJson = {};
+//        console.log(ocrData[i])
+//        const bbox = outerBbox[j]['bbox'];
+//        subJson['bbox'] = {'x': bbox['x0'], 'y': bbox['y0'], 'w': bbox['x1'] - bbox['x0'], 'h': bbox['y1'] - bbox['y0']};
+//        subJson['text'] = outerBbox[j]['text']
+//        subList.push(subJson);
+//    }
+//    ocrDataModified.push(subList);
+//  }
+
+  var boxList = [];
+//  boxList.push("# OCR data\n");
+//  boxList.push(ocrDataModified + '\n');
+  boxList.push("# Instructions\n");
+
+  for (var i = 0; i < labelInfo.length; i++) {
+    const boundingInfo = `- bounding box: [x: ${labelInfo[i].x}, y: ${labelInfo[i].y}, w: ${labelInfo[i].w}, h: ${labelInfo[i].h}]` + '\n';
+    const instructionInfo = `- specification: ${labelInfo[i].comment}` + '\n';
+    boxList.push(boundingInfo + instructionInfo);
+  }
+  boxList = boxList.join('@@@');
+
+  console.log(boxList);
+
+//  const userComment = labelInfo[0]?.comment;
+
 
   let selectedImageStream = null;
   let maskedImageStream = null;
@@ -165,15 +195,20 @@ const modifyImage = async (selectedImage, maskedImage, labelInfo) => {
     return await openai.images.edit({
       image: selectedImageStream,
       mask: maskedImageStream,
-      prompt: Prompt.MODIFY_IMAGE + userComment,
+      prompt: Prompt.MODIFY_IMAGE,
       size: "512x512", // 512x512 for dalle2, 1024x1024 for dalle3
       response_format: "b64_json",
-    }).then((result) => {
+    }).then(async (result) => {
       const image = result.data[0];
       // const image_url = image.url;
       const base64_image = 'data:image/jpeg;base64,' + image.b64_json;
+//      await openai.images.edit({
+//                    image: 'null',
+//                    mask: 'null',
+//                    prompt: boxList,
+//                  })
       return base64_image;
-    });
+    })
   })
 
   // return await openai.images.edit({
