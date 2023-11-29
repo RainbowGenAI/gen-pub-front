@@ -138,13 +138,13 @@ function Main() {
             
             // 캔버스를 렌더링하고 PNG 형식으로 내보냅니다
             const pngDataUrl = canvas.toDataURL('image/png');
-            setGeneratedImage(pngDataUrl);
+            // setGeneratedImage(pngDataUrl);
 
-            return;
-            LLM.modifyImage(selectedImage, pngDataUrl, 'test')
+            // return;
+            LLM.modifyImage(selectedImage, pngDataUrl, labelInfo)
             .then((result) => {
-                console.log(result);
-                return result;
+                // console.log(result);
+                setGeneratedImage(result)
             });
 
         });
