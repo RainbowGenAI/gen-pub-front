@@ -119,12 +119,14 @@ function Main() {
         console.log("Regenerate image button clicked", labelInfo);
 
         setIsRightSection('image');
+        setLoading(true);
 
         if (!selectedImage) {
             alert("Select image first");
             return;
         }
 
+        let pngDataUrl = null;
         fabric.Image.fromURL(selectedImage, function(img) {
             // 요소의 너비와 높이를 가져옵니다
             const width = img.width;
@@ -149,26 +151,35 @@ function Main() {
                 canvas.add(rect);
             });
 
-
             // 이미지의 크기를 조정합니다
             // img.scaleToWidth(width);
             // canvas.setHeight(img.getScaledHeight());
             
-            // 캔버스를 렌더링하고 PNG 형식으로 내보냅니다
-            const pngDataUrl = canvas.toDataURL('image/png');
+            pngDataUrl = canvas.toDataURL('image/png', 0.5);
             // setGeneratedImage(pngDataUrl);
-
-            // return;
-            setLoading(true);
-            LLM.modifyImage(selectedImage, pngDataUrl, labelInfo, ocrData)
-            .then((result) => {
-                setLoading(false);
-                // console.log(result);
-                setGeneratedImage(result)
-            });
-
         });
 
+        let selectedImageFile = null;
+        let maskedImageFile = null;
+        base64ToFile(selectedImage, "\\selectedImage.png")
+        .then((result) => {
+            selectedImageFile = result;
+        })
+        .then(() => {
+            return base64ToFile(pngDataUrl, "\\maskedImage.png");
+        })
+        .then((result) => {
+            maskedImageFile = result;
+        })
+        .then(() => {
+            console.log(selectedImageFile);
+            console.log(maskedImageFile);
+            return LLM.modifyImage(selectedImageFile, maskedImageFile, labelInfo, ocrData)
+        })
+        .then((result) => {
+            setLoading(false);
+            setGeneratedImage(result)
+        });
     };
 
     const handleGenerateHtmlCode = () => {
@@ -187,6 +198,19 @@ function Main() {
         })
     };
 
+    async function base64ToFile(base64String, filename) {
+        // fetch the base64 string
+        const response = await fetch(base64String);
+      
+        // get a Blob from the response
+        const blob = await response.blob();
+      
+        // create a File from the Blob
+        const file = new File([blob], filename, { type: blob.type });
+      
+        return file;
+    }
+
     return (
         <div className="container-fluid container-custom">
         {loading && <div style={{
@@ -200,7 +224,7 @@ function Main() {
         </div>}
             <div className="header fs-3">
                 <div className="step-1 col-3">
-                    <span className="m-2">1. Upload wireframe</span>
+                    <span className="m-2">1. Upload Wireframe</span>
                     <div className="m-2 button-container">
                         <InputGroup className="mb-3">
                             <input className="form-control" type="file" id="formFile" accept="image/*" onChange={handleImageUpload}></input>
