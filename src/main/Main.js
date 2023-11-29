@@ -26,6 +26,7 @@ function Main() {
     const [ocrData, setOcrData] = useState([]);
     const textContainerRef = useRef(null);
     const [loading, setLoading] = useState(false);
+    const [isFirst, setIsFirst] = useState(true);
 
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
@@ -39,6 +40,13 @@ function Main() {
             reader.readAsDataURL(file);
         }
     };
+
+    useEffect(() => {
+        if (selectedImage && isFirst) {
+            handleAnalyzeOcr();
+            setIsFirst(false);
+        }
+    }, [selectedImage]);
 
     const handleAnalyzeOcr = async () => {
         console.log("Confirm button clicked");
@@ -197,9 +205,6 @@ function Main() {
                         <InputGroup className="mb-3">
                             <input className="form-control" type="file" id="formFile" accept="image/*" onChange={handleImageUpload}></input>
                         </InputGroup>
-                        <div style={{textAlign: "right"}}>
-                            <Button variant="info" type="button" className="analyze-ocr-button" onClick={handleAnalyzeOcr} style={{textAlign: 'right'}}>Analyze OCR</Button>
-                        </div>
                     </div>
                 </div>
                 <div className="step-2 col-3">
