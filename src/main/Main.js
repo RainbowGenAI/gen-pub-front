@@ -9,6 +9,11 @@ import { fabric } from 'fabric';
 
 import LLM from './LLM';
 
+import { Spinner } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+
+
 LLM.initOpenAI();
 
 function Main() {
@@ -20,6 +25,7 @@ function Main() {
     const [isRightSection, setIsRightSection] = useState('image'); //image, text
     const [ocrData, setOcrData] = useState([]);
     const textContainerRef = useRef(null);
+    const [loading, setLoading] = useState(false);
 
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
@@ -42,12 +48,14 @@ function Main() {
             alert("Select image first");
             return;
         }
+        setLoading(true);
 
         const worker = await createWorker();
         await worker.load();
         await worker.loadLanguage('kor');
         await worker.reinitialize('kor');
         const response = await worker.recognize(selectedImage);
+        setLoading(false);
 
         console.log(response.data.lines);
         setOcrData(response.data.lines);
@@ -61,6 +69,7 @@ function Main() {
         setIsRightSection('image');
 
         // LLM.createImage("test");
+        setLoading(true);
         LLM.createPromptByImage(userInput, selectedImage)
         .then((result) => {
             console.log(result);
@@ -70,6 +79,7 @@ function Main() {
             return LLM.createImage(result);
         })
         .then((result) => {
+            setLoading(false);
             console.log(result.substring(0, 50));
             setGeneratedImage(result);
         });
@@ -140,9 +150,11 @@ function Main() {
             const pngDataUrl = canvas.toDataURL('image/png');
             setGeneratedImage(pngDataUrl);
 
-            return;
+//            return;
+            setLoading(true);
             LLM.modifyImage(selectedImage, pngDataUrl, 'test')
             .then((result) => {
+                setLoading(false);
                 console.log(result);
                 return result;
             });
@@ -155,17 +167,29 @@ function Main() {
         console.log("Create final image button clicked");
         setIsRightSection('text');
         // LLM.createImage("test");
+        setLoading(true);
         LLM.createCodeByImage(selectedImage)
         .then((result) => {
+            setLoading(false);
             console.log(result);
             textContainerRef.current.textContent = result;
         }).catch((err) => {
+            setLoading(false);
             console.log(err);
         })
     };
 
     return (
         <div className="container-fluid container-custom">
+        {loading && <div style={{
+                               position: "fixed",
+                               left: "50%",
+                               top: "50%",
+                               transform: "translate(-50%, -50%)"}}>
+            {<Spinner animation="grow" variant="warning" role="status">
+                <span className="sr-only"></span>
+            </Spinner>}
+        </div>}
             <div className="header fs-3">
                 <div className="step-1 col-3">
                     <span className="m-2">1. Upload wireframe</span>
