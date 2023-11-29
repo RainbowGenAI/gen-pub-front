@@ -135,7 +135,8 @@ const createImage = async (prompt) => {
     // console.log(result);
     const image = result.data[0];
     // const image_url = image.url;
-    const base64_image = 'data:image/jpeg;base64,' + image.b64_json;
+    const base64_image = 'data:image/png;base64,' + image.b64_json;
+    // const base64_image = 'data:image/png;base64,' + image.b64_json;
     return base64_image;
   });
 }
@@ -189,8 +190,8 @@ const modifyImage = async (selectedImage, maskedImage, labelInfo, ocrData) => {
     maskedImageStream = result;
   })
   .then(async (result) => {
-    // console.log(selectedImageStream);
-    // console.log(maskedImageStream);
+    console.log(selectedImageStream);
+    console.log(maskedImageStream);
 
     return await openai.images.edit({
       image: selectedImageStream,
@@ -201,12 +202,7 @@ const modifyImage = async (selectedImage, maskedImage, labelInfo, ocrData) => {
     }).then(async (result) => {
       const image = result.data[0];
       // const image_url = image.url;
-      const base64_image = 'data:image/jpeg;base64,' + image.b64_json;
-//      await openai.images.edit({
-//                    image: 'null',
-//                    mask: 'null',
-//                    prompt: boxList,
-//                  })
+      const base64_image = 'data:image/png;base64,' + image.b64_json;
       return base64_image;
     })
   })

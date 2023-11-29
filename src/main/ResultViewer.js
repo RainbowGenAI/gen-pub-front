@@ -7,12 +7,14 @@ let viewer = null;
 function ResultViewer(props) {
 
   useEffect(() => {
+      if(viewer) viewer.destroy();
+      
       if(!props.generatedImage) return;
+
+
       const generatedImage = props.generatedImage;
 
-      if(viewer) {
-          viewer.destroy();
-      }
+
       
       viewer = OpenSeadragon({
           id: 'openseadragonId-2',

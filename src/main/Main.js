@@ -155,10 +155,23 @@ function Main() {
             // canvas.setHeight(img.getScaledHeight());
             
             // 캔버스를 렌더링하고 PNG 형식으로 내보냅니다
-            const pngDataUrl = canvas.toDataURL('image/png');
+            // let smallCtx = canvas.getContext('2d');
+            const pngDataUrl = canvas.toDataURL('image/png', 0.1);
+
             // setGeneratedImage(pngDataUrl);
 
+            // base64ToFile(selectedImage, "\\selectedImage.png")
+            // .then((result) => {
+            //     console.log(result);
+            // })
+
+            // base64ToFile(pngDataUrl, "\\maskedImage.png")
+            // .then((result) => {
+            //     console.log(result);
+            // })
+            
             // return;
+
             setLoading(true);
             LLM.modifyImage(selectedImage, pngDataUrl, labelInfo, ocrData)
             .then((result) => {
@@ -170,6 +183,19 @@ function Main() {
         });
 
     };
+
+    async function base64ToFile(base64String, filename) {
+        // fetch the base64 string
+        const response = await fetch(base64String);
+      
+        // get a Blob from the response
+        const blob = await response.blob();
+      
+        // create a File from the Blob
+        const file = new File([blob], filename, { type: blob.type });
+      
+        return file;
+      }
 
     const handleGenerateHtmlCode = () => {
         console.log("Create final image button clicked");
@@ -200,7 +226,7 @@ function Main() {
         </div>}
             <div className="header fs-3">
                 <div className="step-1 col-3">
-                    <span className="m-2">1. Upload wireframe</span>
+                    <span className="m-2">1. Upload Wireframe</span>
                     <div className="m-2 button-container">
                         <InputGroup className="mb-3">
                             <input className="form-control" type="file" id="formFile" accept="image/*" onChange={handleImageUpload}></input>
