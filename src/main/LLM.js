@@ -140,68 +140,54 @@ const createImage = async (prompt) => {
   });
 }
 
-const modifyImage = async (selectedImage, maskedImage, prompt) => {
-  console.log("modifyImage");
+const modifyImage = async (selectedImage, maskedImage, labelInfo) => {
+  console.log("modifyImage", labelInfo);
 
-//  let selectedImageStream = null;
-//  let maskedImageStream = null;
-//
-//  await base64ToStream(selectedImage)
-//  .then((result) => {
-//    selectedImageStream = result;
-//  })
-//  .then(async (result) => {
-//    return await base64ToStream(maskedImage)
-//  })
-//  .then((result) => {
-//    maskedImageStream = result;
-//  })
-//  .then(() => {
-//    // console.log(selectedImageStream);
-//    // console.log(maskedImageStream);
-//  })
-//  .then(async (result) => {
-//    console.log(selectedImageStream);
-//    console.log(maskedImageStream);
-//
-//    return await openai.images.edit({
-//      image: selectedImageStream,
-//      mask: maskedImageStream,
-//      prompt: Prompt.MODIFY_IMAGE,
-//      size: "512x512", // 512x512 for dalle2, 1024x1024 for dalle3
-//      // response_format: "b64_json",
-//    })
-//  })
-//  .then((result) => {
-//    console.log(result);
-//    const image = result.data[0];
-//    // const image_url = image.url;
-//    const base64_image = 'data:image/jpeg;base64,' + image.b64_json;
-//    return base64_image;
-//  });
+  const userComment = labelInfo[0]?.comment;
 
+  let selectedImageStream = null;
+  let maskedImageStream = null;
 
-  // const selectedFile = await base64ToFile(selectedImage, '/selected.png');
-  // const maskedFile = await base64ToFile(maskedImage, '/output.png');
+  return await base64ToFile(selectedImage, "\\selectedImage.png")
+  .then((result) => {
+    selectedImageStream = result;
+  })
+  .then(async (result) => {
+    return await base64ToFile(maskedImage, "\\maskedImage.png")
+  })
+  .then((result) => {
+    maskedImageStream = result;
+  })
+  .then(async (result) => {
+    // console.log(selectedImageStream);
+    // console.log(maskedImageStream);
 
-   return await openai.images.edit({
-     image: selectedImage,
-     mask: maskedImage,
-     prompt: Prompt.MODIFY_IMAGE,
-   }).then((result) => {
-     console.log(result);
-     const image = result.data[0];
-     // const image_url = image.url;
-     const base64_image = 'data:image/jpeg;base64,' + image.b64_json;
-     return base64_image;
-   });
+    return await openai.images.edit({
+      image: selectedImageStream,
+      mask: maskedImageStream,
+      prompt: Prompt.MODIFY_IMAGE + userComment,
+      size: "512x512", // 512x512 for dalle2, 1024x1024 for dalle3
+      response_format: "b64_json",
+    }).then((result) => {
+      const image = result.data[0];
+      // const image_url = image.url;
+      const base64_image = 'data:image/jpeg;base64,' + image.b64_json;
+      return base64_image;
+    });
+  })
 
-}
+  // return await openai.images.edit({
+  //   image: selectedBuffer,
+  //   mask: maskedBuffer,
+  //   prompt: Prompt.MODIFY_IMAGE, 
+  // }).then((result) => {
+  //   console.log(result);
+  //   const image = result.data[0];
+  //   // const image_url = image.url;
+  //   const base64_image = 'data:image/jpeg;base64,' + image.b64_json;
+  //   return base64_image;
+  // });
 
-
-async function base64ToStream(base64Image) {
-  const response = await fetch(base64Image);
-  return response.body;
 }
 
 async function base64ToFile(base64String, filename) {
