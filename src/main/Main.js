@@ -140,6 +140,7 @@ function Main() {
             const pngDataUrl = canvas.toDataURL('image/png');
             setGeneratedImage(pngDataUrl);
 
+            return;
             LLM.modifyImage(selectedImage, pngDataUrl, 'test')
             .then((result) => {
                 console.log(result);
@@ -172,6 +173,9 @@ function Main() {
                         <InputGroup className="mb-3">
                             <input className="form-control" type="file" id="formFile" accept="image/*" onChange={handleImageUpload}></input>
                         </InputGroup>
+                        <div style={{textAlign: "right"}}>
+                            <Button variant="info" type="button" className="analyze-ocr-button" onClick={handleAnalyzeOcr} style={{textAlign: 'right'}}>Analyze OCR</Button>
+                        </div>
                     </div>
                 </div>
                 <div className="step-2 col-3">
@@ -194,7 +198,6 @@ function Main() {
                 <div className="step-3 col-3">
                     <span className="">3. Modify Image</span>
                     <div className="m-2 button-container">
-                        <Button variant="info" type="button" className="analyze-ocr-button" onClick={handleAnalyzeOcr}>Analyze OCR</Button>
                         <Button variant="success" type="button" className="regenerate-image-button m-2" onClick={handleRegenerateImage}>Re-Generate</Button>
                         <Button variant="primary" type="button" className="confirm-button" onClick={handleConfirmImage}>Confirm</Button>
                     </div>
