@@ -1,3 +1,9 @@
 .annotorious-editor .annotorious-editor-text {
   display: none;
 }
+
+.a9s-annotation .a9s-inner, .a9s-selection .a9s-inner {
+  stroke-width: 1 !important;
+  stroke: blue !important;
+  fill:#00a4cb22 !important;
+}

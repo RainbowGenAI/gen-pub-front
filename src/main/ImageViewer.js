@@ -20,6 +20,21 @@ function ImageViewer(props) {
 
   }, [label]);
 
+  const formatter = (annotation) => {
+
+    var tagBodies = annotation.bodies.filter(function(body) {
+      return body.type === 'TextualBody' && body.purpose === 'tagging';
+    });
+
+    console.log(tagBodies)
+    if (tagBodies.length === 0) {
+        return;
+    }
+
+    // E.g. you could return the first tag, and Annotorious will add it as a CSS class name
+    return tagBodies[0].value;
+  }
+
   useEffect(() => {
       if(!props.selectedImage) return;
       const selectedImage = props.selectedImage;
@@ -41,10 +56,14 @@ function ImageViewer(props) {
           navigatorWidth: 100,
           zoomInButton: 'zoom-in',
           zoomOutButton: 'zoom-out',
-          zoomPerClick: 1,
+          zoomPerClick: 1
       });
 
-      const anno = Annotorious(viewer);
+      const config = {
+            formatter: formatter
+          }
+
+      const anno = Annotorious(viewer, config);
 
       anno.on('createAnnotation', function(a) {
           // console.log(a);
