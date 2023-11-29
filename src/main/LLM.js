@@ -143,7 +143,7 @@ const createImage = async (prompt) => {
 const modifyImage = async (selectedImage, maskedImage, labelInfo) => {
   console.log("modifyImage", labelInfo);
 
-  const prompt = labelInfo[0]?.comment;
+  const userComment = labelInfo[0]?.comment;
 
   let selectedImageStream = null;
   let maskedImageStream = null;
@@ -165,8 +165,7 @@ const modifyImage = async (selectedImage, maskedImage, labelInfo) => {
     return await openai.images.edit({ 
       image: selectedImageStream,
       mask: maskedImageStream,
-      // prompt: Prompt.MODIFY_IMAGE, 
-      prompt: prompt, 
+      prompt: Prompt.MODIFY_IMAGE + userComment, 
       size: "512x512", // 512x512 for dalle2, 1024x1024 for dalle3
       response_format: "b64_json",
     }).then((result) => {
