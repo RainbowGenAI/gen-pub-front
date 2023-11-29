@@ -161,14 +161,14 @@ const modifyImage = async (selectedImage, maskedImage, labelInfo, ocrData) => {
   var boxList = [];
 //  boxList.push("# OCR data\n");
 //  boxList.push(ocrDataModified + '\n');
-  boxList.push("# Instructions\n");
 
   for (var i = 0; i < labelInfo.length; i++) {
-    const boundingInfo = `- bounding box: [x: ${labelInfo[i].x}, y: ${labelInfo[i].y}, w: ${labelInfo[i].w}, h: ${labelInfo[i].h}]` + '\n';
+    const boundingInfo = `- bounding box: {x: ${labelInfo[i].x}, y: ${labelInfo[i].y}, w: ${labelInfo[i].w}, h: ${labelInfo[i].h}}` + '\n';
     const instructionInfo = `- specification: ${labelInfo[i].comment}` + '\n';
     boxList.push(boundingInfo + instructionInfo);
   }
   boxList = boxList.join('@@@');
+  boxList = '# Instructions\n' + boxList;
 
   console.log(boxList);
 
@@ -195,7 +195,7 @@ const modifyImage = async (selectedImage, maskedImage, labelInfo, ocrData) => {
     return await openai.images.edit({
       image: selectedImageStream,
       mask: maskedImageStream,
-      prompt: Prompt.MODIFY_IMAGE,
+      prompt: Prompt.MODIFY_IMAGE + boxList,
       size: "512x512", // 512x512 for dalle2, 1024x1024 for dalle3
       response_format: "b64_json",
     }).then(async (result) => {

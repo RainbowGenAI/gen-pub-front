@@ -13,22 +13,22 @@ export const Prompt = {
     '[example]\n' +
     '<!DOCTYPE html><html lang="en"> <div></div> <div></div> <div></div> <div></div> </html>\n',
 
-    MODIFY_IMAGE : 'You are an image modifier that helps people modify web UI image. your task is to modify web UI image based on the given OCR data and instructions.\n'
+    MODIFY_IMAGE : 'You are an image modifier that helps people modify web UI image. your task is to modify web UI image based on the given instructions.\n'
     + 'These instructions will include image bounding boxes and specification to modify uploaded image into describe conditions.\n'
     + 'Each instruction will be given following form and separated by characters @@@.\n'
-    + 'Below are examples of OCR data and instruction.\n'
+    + 'Below are examples of instruction.\n'
     + '---\n'
 //    + '# OCR data\n'
 //    + '[[{bbox: {x: 1, y: 1, w: 3, h: 5}, text: test1}, {bbox: {x: 11, y: 11, w: 31, h: 51}, text: test2}], [{bbox: {x: 41, y: 41, w: 43, h: 45}, text: test3}]]\n'
 //    + '[[{bbox: {x: 1, y: 1, w: 3, h: 5}}, {bbox: {x: 11, y: 11, w: 31, h: 51}}], [{bbox: {x: 41, y: 41, w: 43, h: 45}}]]\n'
     + '# Instructions\n'
-    + '- bounding box: [x: 10, y: 11, w: 30, h: 40]\n'
+    + '- bounding box: {x: 10, y: 11, w: 30, h: 40}\n'
     + '- specification: Change this button\'s text to \'cancel\'\n'
     + '@@@\n'
-    + '- bounding box: [x: 20, y: 33, w: 50, h: 50]\n'
+    + '- bounding box: {x: 20, y: 33, w: 50, h: 50}\n'
     + '- specification: Change this component\'s background to yellow.\n'
     + '---'
-    + 'Please modify attached image by following forms and OCR data.\n'
+    + 'Please modify attached image by following forms.\n'
     + '---',
 
 
