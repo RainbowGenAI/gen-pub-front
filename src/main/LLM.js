@@ -7,7 +7,7 @@ import { Readable } from 'stream';
 const api_config = {
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
   dangerouslyAllowBrowser: true,
-  temperature: 0.9,
+  temperature: 0.5,
 }
 
 // const langchain_api_config = {
@@ -60,13 +60,13 @@ const createPromptByImage = async (userInput, selecedImage) => {
             image_url: {
               // url: `data:image/jpeg;base64,${selecedImage}`
               url: selecedImage,
-              detail: 'low', //high
+              detail: 'high', //high
             }
           }
         ]
       }
     ],
-    max_tokens: 300
+    max_tokens: 2000
   };
 
   return await fetch('https://api.openai.com/v1/chat/completions', {
@@ -100,7 +100,7 @@ const createCodeByImage = async (selecedImage) => {
             type: 'image_url',
             image_url: {
               url: selecedImage,
-              detail: 'low',
+              detail: 'high',
             }
           }
         ]
@@ -129,7 +129,7 @@ const createImage = async (prompt) => {
     prompt: prompt, 
     n: 1,
     size: "1024x1024", // 512x512 for dalle2, 1024x1024 for dalle3
-    quality: "standard", // standard, hq
+    quality: "hd", // standard, hd
     response_format: "b64_json",
   }).then((result) => {
     // console.log(result);
@@ -142,6 +142,9 @@ const createImage = async (prompt) => {
 
 const modifyImage = async (selectedImage, maskedImage, labelInfo, ocrData) => {
   console.log("modifyImage", labelInfo);
+
+  const userComment = labelInfo[0]?.comment;
+  console.log(userComment)
 
 //  var ocrDataModified = [];
 //  for (var i = 0; i < ocrData.length; i++) {
@@ -175,7 +178,8 @@ const modifyImage = async (selectedImage, maskedImage, labelInfo, ocrData) => {
   return await openai.images.edit({
     image: selectedImage,
     mask: maskedImage,
-    prompt: Prompt.MODIFY_IMAGE + boxList,
+    // prompt: Prompt.MODIFY_IMAGE + boxList,
+    prompt: Prompt.MODIFY_IMAGE + userComment,
     size: "512x512", // 512x512 for dalle2, 1024x1024 for dalle3
     response_format: "b64_json",
   }).then(async (result) => {

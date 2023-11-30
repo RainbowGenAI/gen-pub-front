@@ -93,6 +93,12 @@ function Main() {
 
     const handleGerateImage = () => {
         console.log("handleGerateImage button clicked");
+
+        if (!selectedImage) {
+            alert("Select image first");
+            return;
+        }
+        
         setIsRightSection('image');
 
         // LLM.createImage("test");
@@ -109,6 +115,9 @@ function Main() {
             setLoading(false);
             console.log(result.substring(0, 50));
             setGeneratedImage(result);
+        })
+        .catch((err) => {   
+            alert("Please try again");
         });
     };
 
