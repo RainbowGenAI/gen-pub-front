@@ -117,7 +117,8 @@ function Main() {
             setGeneratedImage(result);
         })
         .catch((err) => {   
-            alert("Please try again");
+            // alert("Please try again");
+            console.log(err);
         });
     };
 

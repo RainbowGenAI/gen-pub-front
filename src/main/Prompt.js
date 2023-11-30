@@ -4,7 +4,29 @@ export const Prompt = {
     'The image style is similar to the image below.\n' +
     'The image style can be changed by userPrompt.\n' +
     'Generated image size has to be under 4 MB.\n' +
+    'Do not include any objects or backgrounds outside of the web screen in the image.\n' +
+    'Exclude any unnecessary components or image elements and create a simple layout.\n' +
+    'Exclude geometric icons and images as much as possible.\n' +
+    'Exclude a cartoonish feel and create a layout with a serious and enterprise-oriented atmosphere.\n' +
     '[userInput]\n',
+
+    // ANALYZE_IMAGE : 'I want to change the layout of a webpage to simplely fit samsung developer theme.\n' +
+    // 'I aim to create an extremely simple theme that is convenient for introducing solutions and accessing the community on the webpage.\n' +
+    // 'please refer to the developer portal website below : https://developer.apple.com/kr/discover/\\n' +
+    // 'There is no background image, or blur it if necessary.\n' +
+    // 'Use a maximum of four colors in the color palette: main color, sub-color, accent color, and negative color.\n' +
+    // 'This webpage includes areas for introducing the solutions through text and showcasing an introductory video\n' +
+    
+    // 'Do not include any objects or backgrounds outside of the web screen in the image.\n' +
+    // 'Exclude any unnecessary components or image elements and create a simple layout.\n' +
+    // 'Exclude geometric icons and images as much as possible.\n' +
+    // 'Exclude a cartoonish feel and create a layout with a serious and enterprise-oriented atmosphere.\n' +
+    
+    // 'This website is designed to introduce our four main products (Brity RPA, Brity Assistant, Brity Cognitive, Brity Automation Platform)and to create and expand the Brity Solution Developer Community.\n' +
+    // 'Create components that allow users to navigate to detailed pages for each product.\n' +
+    // 'Include all components from the given image, and generate the image with text labels inside the components as well.\n' +
+    // 'The text included in the image is as follows:\n' +
+    // 'Brityworks.ai Product Solution Community ® @ Q & Make yourse If more valuable Overvie\n',
 
     GENERATE_HTML_CODE : 'You are a html code generator.\n' +
     'Please generate html code based on the image below.\n' +
