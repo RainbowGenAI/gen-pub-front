@@ -225,11 +225,17 @@ function Main() {
         .then((result) => {
             setLoading(false);
             console.log(result);
+            result = result.split("```html")[1].split("```");
             textContainerRef.current.textContent = result;
         }).catch((err) => {
             setLoading(false);
             console.log(err);
         })
+    };
+
+    const handleCheckByNewTab = () => {
+        var win = window.open('','Title','height=300,width=300');
+        win.document.body.innerHTML = textContainerRef.current.textContent;
     };
 
     async function base64ToFile(base64String, filename) {
@@ -292,9 +298,8 @@ function Main() {
                 <div className="step-4 col-3">
                     <span className="">4. Generate Code</span>
                     <div className="m-2 button-container">
-                        <InputGroup className="mb-3"  style={{justifyContent: "flex-end"}}>
-                            <Button variant="primary" type="button" className="generate-html-code-button" onClick={handleGenerateHtmlCode}>Generate Code</Button>
-                        </InputGroup>
+                        <Button variant="success" type="button" className="generate-html-code-button m-2" onClick={handleGenerateHtmlCode}>Generate Code</Button>
+                        <Button variant="warning" type="button" className="check-html-code-button" onClick={handleCheckByNewTab}>Check by new Tab</Button>
                     </div>
                 </div>
             </div>
