@@ -156,7 +156,7 @@ function Main() {
             // canvas.setHeight(img.getScaledHeight());
             
             pngDataUrl = canvas.toDataURL('image/png', 0.5);
-            // setGeneratedImage(pngDataUrl);
+
         });
 
         let selectedImageFile = null;
@@ -181,6 +181,19 @@ function Main() {
             setGeneratedImage(result)
         });
     };
+
+    async function base64ToFile(base64String, filename) {
+        // fetch the base64 string
+        const response = await fetch(base64String);
+      
+        // get a Blob from the response
+        const blob = await response.blob();
+      
+        // create a File from the Blob
+        const file = new File([blob], filename, { type: blob.type });
+      
+        return file;
+      }
 
     const handleGenerateHtmlCode = () => {
         console.log("Create final image button clicked");

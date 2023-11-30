@@ -183,6 +183,7 @@ const modifyImage = async (selectedImage, maskedImage, labelInfo, ocrData) => {
     // const image_url = image.url;
     const base64_image = 'data:image/jpeg;base64,' + image.b64_json;
     return base64_image;
+
   })
 }
 
