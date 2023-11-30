@@ -3,6 +3,7 @@ export const Prompt = {
     'I will create an same image based on the prompt.\n' +
     'The image style is similar to the image below.\n' +
     'The image style can be changed by userPrompt.\n' +
+    'Generated image size has to be under 4 MB.\n' +
     '[userInput]\n',
 
     GENERATE_HTML_CODE : 'You are a html code generator.\n' +
@@ -14,6 +15,7 @@ export const Prompt = {
     '<!DOCTYPE html><html lang="en"> <div></div> <div></div> <div></div> <div></div> </html>\n',
 
     MODIFY_IMAGE : 'You are an image modifier that helps people modify web UI image. your task is to modify web UI image based on the given instructions.\n'
+    + 'Generated image size has to be under 4 MB.\n'
     + 'These instructions will include image bounding boxes and specification to modify uploaded image into describe conditions.\n'
     + 'Each instruction will be given following form and separated by characters @@@.\n'
     + 'Below are examples of instruction.\n'

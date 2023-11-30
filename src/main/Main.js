@@ -11,6 +11,7 @@ import LLM from './LLM';
 
 import { Spinner } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Resizer from "react-image-file-resizer";
 
 
 
@@ -27,6 +28,24 @@ function Main() {
     const textContainerRef = useRef(null);
     const [loading, setLoading] = useState(false);
     const [isFirst, setIsFirst] = useState(true);
+
+    const resizeFile = (file) =>
+      new Promise((resolve) => {
+        Resizer.imageFileResizer(
+          file, // Blob
+          1024, // maxWidth.
+          1024,// maxHeight
+          "PNG",// Format.
+          80, // Quality 100 is max.
+          0,
+          (uri) => {
+            resolve(uri);
+          },
+          "file" // output type = base64 | blob | file
+        );
+      }
+    );
+
 
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
@@ -162,14 +181,16 @@ function Main() {
         let selectedImageFile = null;
         let maskedImageFile = null;
         base64ToFile(selectedImage, "\\selectedImage.png")
-        .then((result) => {
-            selectedImageFile = result;
+        .then(async(result) => {
+            const convertedInputFile1 = await resizeFile(result);
+            selectedImageFile = convertedInputFile1;
         })
         .then(() => {
             return base64ToFile(pngDataUrl, "\\maskedImage.png");
         })
-        .then((result) => {
-            maskedImageFile = result;
+        .then(async(result) => {
+            const convertedInputFile2 = await resizeFile(result);
+            maskedImageFile = convertedInputFile2;
         })
         .then(() => {
             console.log(selectedImageFile);
