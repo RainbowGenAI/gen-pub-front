@@ -1,13 +1,13 @@
 export const Prompt = {
     ANALYZE_IMAGE : 'Please analyze the image and make a prompt\n' +
     'I will create an same image based on the prompt.\n' +
-    'The image style is similar to the image below.\n' +
-    'The image style can be changed by userPrompt.\n' +
-    'Generated image size has to be under 4 MB.\n' +
-    'Do not include any objects or backgrounds outside of the web screen in the image.\n' +
-    'Exclude any unnecessary components or image elements and create a simple layout.\n' +
-    'Exclude geometric icons and images as much as possible.\n' +
-    'Exclude a cartoonish feel and create a layout with a serious and enterprise-oriented atmosphere.\n' +
+    // 'The image style is similar to the image below.\n' +
+    // 'The image style can be changed by userPrompt.\n' +
+    // 'Generated image size has to be under 4 MB.\n' +
+    // 'Do not include any objects or backgrounds outside of the web screen in the image.\n' +
+    // 'Exclude any unnecessary components or image elements and create a simple layout.\n' +
+    // 'Exclude geometric icons and images as much as possible.\n' +
+    // 'Exclude a cartoonish feel and create a layout with a serious and enterprise-oriented atmosphere.\n' +
     '[userInput]\n',
 
     // ANALYZE_IMAGE : 'I want to change the layout of a webpage to simplely fit samsung developer theme.\n' +
