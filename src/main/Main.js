@@ -299,16 +299,16 @@ function Main() {
                     </div>
                 </div>
                 <div className="step-3 col-3">
-                    <span className="">3. Modify Image</span>
-                    <div className="m-2 button-container">
-                        <Button variant="success" type="button" className="regenerate-image-button m-2" onClick={handleRegenerateImage}>Re-Generate</Button>
+                    <span className="" >3. Modify Image</span>
+                    <div className="m-2 button-container" style={{height: '100px', display:'flex', alignItems: 'flex-end', justifyContent: 'flex-end'}}>
+                        <Button variant="success" type="button" className="regenerate-image-button" style={{marginRight: '5px'}} onClick={handleRegenerateImage}>Re-Generate</Button>
                         <Button variant="primary" type="button" className="confirm-button" onClick={handleConfirmImage}>Confirm</Button>
                     </div>
                 </div>
                 <div className="step-4 col-3">
                     <span className="">4. Generate Code</span>
-                    <div className="m-2 button-container">
-                        <Button variant="success" type="button" className="generate-html-code-button m-2" onClick={handleGenerateHtmlCode}>Generate Code</Button>
+                    <div className="m-2 button-container" style={{height: '100px', display:'flex', alignItems: 'flex-end', justifyContent: 'flex-end'}} >
+                        <Button variant="success" type="button" className="generate-html-code-button" style={{marginRight: '5px'}} onClick={handleGenerateHtmlCode}>Generate Code</Button>
                         <Button variant="warning" type="button" className="check-html-code-button" onClick={handleCheckByNewTab}>Check by new Tab</Button>
                     </div>
                 </div>
